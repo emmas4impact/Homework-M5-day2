@@ -18,26 +18,51 @@ const readFile = (fileName) => {
   return JSON.parse(fileContent)
 }
 
-router.post("/:studentId/upload", upload.single("avatar"), async(req, res, next)=>{
-  //req.file here is where we're gonna find the single file
+// router.post("/:studentId/upload", upload.single("avatar"), async(req, res, next)=>{
+//   //req.file here is where we're gonna find the single file
   
- console.log(req.file)
- //console.log(studentsFolderPath )
+//  console.log(req.file)
+//  //console.log(studentsFolderPath )
   
-  try {
-      const studentDb = readFile("studentdetail.json")
-      const newDb = studentDb.map(student=>{
-        if(student.studentId===req.params.studentId){
-          student.image = `http://localhost:${port}/img/student/${req.params.studentId}.jpg`
-        }
-        return student
-      })
-      fs.writeFileSync(path.join(__dirname, "studentdetail.json"), JSON.stringify(newDb))
+//   try {
+//       const studentDb = readFile("studentdetail.json")
+//       const newDb = studentDb.map(student=>{
+//         if(student.studentId === req.params.studentId){
+//           student.image = `http://localhost:${port}/img/student/${req.params.studentId}.jpg`
+//         }
+//         return student
+//       })
+//       fs.writeFileSync(path.join(__dirname, "studentdetail.json"), JSON.stringify(newDb))
 
-      await writeFile(join(studentsFolderPath, req.file.originalname), req.file.buffer)
-      
+//       await writeFile(join(studentsFolderPath, `${req.params.studentId}.jpg`), req.file.buffer)
+//       console.log(req.params.studentId)
+//   } catch (error) {
+//       console.log(error)
+//   }
+//   res.send("ok")
+// })
+
+router.post("/:studentId/upload", upload.single("studentAvatar"), async (req, res, next) => {
+  
+  console.log(req.file.buffer)
+  try {
+    const studentsDB = readFile("studentdetail.json")
+    
+    const newDb = studentsDB.map((x) => {
+      if(x.studentId === req.params.studentId){
+          x.image = `http://localhost:${port}/img/student/${req.params.studentId}.jpg`
+      }
+      return x;
+  })
+
+    fs.writeFileSync(path.join(__dirname, "studentdetail.json"), JSON.stringify(newDb))
+
+    await writeFile(
+      join(studentsFolderPath, `${req.params.studentId}.jpg`),
+      req.file.buffer
+    )
   } catch (error) {
-      console.log(error)
+    console.log(error)
   }
   res.send("ok")
 })

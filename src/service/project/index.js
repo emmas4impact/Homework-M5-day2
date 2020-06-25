@@ -53,7 +53,7 @@ router.post("/:ProjectId/upload", upload.single("avatar"), async(req, res, next)
       })
       fs.writeFileSync(path.join(__dirname, "projectdetails.json"), JSON.stringify(newDb))
 
-      await writeFile(join(projectsFolderPath, req.file.originalname), req.file.buffer)
+      await writeFile(join(projectsFolderPath, `${req.params.ProjectId}.jpg`), req.file.buffer)
       
   } catch (error) {
       console.log(error)
